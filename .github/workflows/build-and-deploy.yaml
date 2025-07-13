@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       BUCKET: www.chisomdevopsbyexample.io
-      DIST: build
+      DIST: out  # Changed from 'build' to 'out'
       REGION: eu-north-1
       DIST_ID: E2ZCFKHSDZVVSP
 
@@ -37,6 +37,14 @@ jobs:
 
       - name: Build Static Website
         run: npm run build
+
+      # Add debug step to see what directories exist
+      - name: Debug - List build output
+        run: |
+          echo "Contents of current directory:"
+          ls -la
+          echo "Checking if ${{ env.DIST }} directory exists:"
+          ls -la ${{ env.DIST }} || echo "${{ env.DIST }} directory not found"
 
       - name: Sync files to S3
         run: aws s3 sync --delete ${{ env.DIST }} s3://${{ env.BUCKET }}
