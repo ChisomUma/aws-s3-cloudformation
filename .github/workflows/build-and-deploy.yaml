@@ -1,9 +1,10 @@
----
 name: Build and deploy Next.js app to CloudFront
+
 on: 
   push:
     branches:
       - main
+
 jobs: 
   build-and-deploy:
     name: Build and Deploy to CloudFront
@@ -17,6 +18,19 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Cache Node.js modules
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -33,11 +47,11 @@ jobs:
       - name: Build Static Website
         run: npm run build
 
-      - name: Copy files to the production website with the AWS CLI
+      - name: Sync files to S3
         run: |
-          aws s3 sync --delete ./${{ env.DIST }} s3://${{ env.BUCKET }} 
+          aws s3 sync --delete ./${{ env.DIST }} s3://${{ env.BUCKET }}
 
-      - name: Copy files to the production website with the AWS CLI
+      - name: Invalidate CloudFront Cache
         run: |
           aws cloudfront create-invalidation \
             --distribution-id ${{ env.DIST_ID }} \
