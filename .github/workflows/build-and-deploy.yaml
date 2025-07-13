@@ -1,5 +1,5 @@
 ---
-name: Build and deploy Next.js app to CloufFront
+name: Build and deploy Next.js app to CloudFront
 on: 
   push:
     branches:
@@ -16,10 +16,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -42,3 +42,10 @@ jobs:
           aws cloudfront create-invalidation \
             --distribution-id ${{ env.DIST_ID }} \
             --paths "/*"
+
+      - name: Example - Set a custom output (new way)
+        id: set_output
+        run: echo "build_status=success" >> "$GITHUB_OUTPUT"
+
+      - name: Example - Use that output
+        run: echo "The build status was ${{ steps.set_output.outputs.build_status }}"
