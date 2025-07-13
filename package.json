@@ -5,11 +5,8 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
-    "build:static": "next build && next export",
     "start": "next start",
-    "lint": "next lint",
-    "deploy": "npm run build && aws s3 sync --delete out s3://www.chisomdevopsbyexample.io",
-    "deploy:preview": "npm run build && aws s3 sync --delete out s3://preview.chisomdevopsbyexample.io"
+    "lint": "next lint"
   },
   "dependencies": {
     "react": "^19.0.0",
