@@ -39,7 +39,7 @@ jobs:
         run: npm run build
 
       - name: Sync files to S3
-        run: aws s3 sync --delete ${{ env.DIST }} s3://${{ env.BUCKET }}
+        run: aws s3 sync --delete s3://${{ env.BUCKET }}
 
       - name: Invalidate CloudFront Cache
         run: |
